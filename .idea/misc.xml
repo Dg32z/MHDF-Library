@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+      </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/api/pom.xml" />
+        <option value="$PROJECT_DIR$/dist/pom.xml" />
+        <option value="$PROJECT_DIR$/v1_10_R1/pom.xml" />
+        <option value="$PROJECT_DIR$/v1_11_R1/pom.xml" />
+        <option value="$PROJECT_DIR$/v1_12_R1/pom.xml" />
+        <option value="$PROJECT_DIR$/v1_8_R1/pom.xml" />
+        <option value="$PROJECT_DIR$/v1_8_R2/pom.xml" />
+        <option value="$PROJECT_DIR$/v1_8_R3/pom.xml" />
+        <option value="$PROJECT_DIR$/v1_9_R1/pom.xml" />
+        <option value="$PROJECT_DIR$/v1_9_R2/pom.xml" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="azul-21" project-jdk-type="JavaSDK" />
+</project>
