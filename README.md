@@ -82,11 +82,7 @@ _✨轻量 便携 快捷 好用✨_
 ### 重定向配置
 
 ```java
-new RelocateConfig( {
-    是否开启重定向
-},{
-
-重定向groupId(可选)},{需要重定向的包});
+new RelocateConfig({是否开启重定向},{重定向groupId(可选)},{需要重定向的包});
 ```
 
 ## 贡献者
