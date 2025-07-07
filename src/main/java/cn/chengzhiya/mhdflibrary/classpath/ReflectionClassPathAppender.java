@@ -1,5 +1,6 @@
 package cn.chengzhiya.mhdflibrary.classpath;
 
+import cn.chengzhiya.mhdflibrary.MHDFLibrary;
 import lombok.SneakyThrows;
 
 import java.io.File;
@@ -10,6 +11,21 @@ public final class ReflectionClassPathAppender implements ClassPathAppender {
     private final URLClassLoaderAccess classLoaderAccess;
 
     public ReflectionClassPathAppender(ClassLoader classLoader) throws IllegalStateException {
+        try {
+            Class<?> paperPluginClassLoader = Class.forName("io.papermc.paper.plugin.entrypoint.classloader.PaperPluginClassLoader");
+            if (paperPluginClassLoader.isInstance(classLoader)) {
+                classLoader = MHDFLibrary.instance.getReflectionManager().getFieldValue(
+                        MHDFLibrary.instance.getReflectionManager().getField(
+                                paperPluginClassLoader,
+                                "libraryLoader",
+                                true
+                        ),
+                        classLoader
+                );
+            }
+        } catch (ClassNotFoundException ignored) {
+        }
+
         if (classLoader instanceof URLClassLoader) {
             this.classLoaderAccess = URLClassLoaderAccess.create((URLClassLoader) classLoader);
         } else {

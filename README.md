@@ -46,7 +46,7 @@ _✨轻量 便携 快捷 好用✨_
 <dependency>
     <groupId>cn.chengzhiya</groupId>
     <artifactId>MHDF-Library</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <scope>compile</scope>
 </dependency>
 </dependencies>
@@ -68,7 +68,7 @@ _✨轻量 便携 快捷 好用✨_
     mhdfLibrary.addDependencyConfig(new DependencyConfig(
         "cn.chengzhiya",
         "MHDF-Scheduler",
-        "1.0.1",
+        "1.0.2",
         new RepositoryConfig("https://maven.chengzhimeow.cn/releases/"),
         new RelocateConfig(false)
     ));
