@@ -1,5 +1,6 @@
 package cn.chengzhiya.mhdflibrary;
 
+import cn.chengzhiya.mhdflibrary.classpath.ClassPathAppender;
 import cn.chengzhiya.mhdflibrary.classpath.ReflectionClassPathAppender;
 import cn.chengzhiya.mhdflibrary.entity.DependencyConfig;
 import cn.chengzhiya.mhdflibrary.entity.RepositoryConfig;
@@ -47,15 +48,13 @@ public final class MHDFLibrary {
     );
     private final CopyOnWriteArrayList<DependencyConfig> dependencyConfigList = new CopyOnWriteArrayList<>();
 
-    public MHDFLibrary(Class<?> main, LoggerManager loggerManager, String relocatorPrefix, File libraryFolder) {
+    public MHDFLibrary(LoggerManager loggerManager, String relocatorPrefix, File libraryFolder, ClassPathAppender classPathAppender) {
         instance = this;
 
         this.httpManager = new HttpManager();
         this.reflectionManager = new ReflectionManager();
 
-        this.dependencyManager = new DependencyManager(
-                new ReflectionClassPathAppender(main.getClassLoader())
-        );
+        this.dependencyManager = new DependencyManager(classPathAppender);
 
         this.loggerManager = loggerManager;
 
@@ -70,6 +69,15 @@ public final class MHDFLibrary {
         this.relocatorManager = new RelocatorManager();
 
         getDependencyManager().loadDependencies(getDefaultDependencyList());
+    }
+
+    public MHDFLibrary(Class<?> main, LoggerManager loggerManager, String relocatorPrefix, File libraryFolder) {
+        this(
+                loggerManager,
+                relocatorPrefix,
+                libraryFolder,
+                new ReflectionClassPathAppender(main.getClassLoader())
+        );
     }
 
     public MHDFLibrary(Class<?> main, String relocatorPrefix, File libraryFolder) {

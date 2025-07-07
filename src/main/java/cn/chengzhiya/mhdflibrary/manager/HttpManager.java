@@ -75,6 +75,9 @@ public final class HttpManager {
         try {
             Files.write(savePath, downloadFile(connection));
         } catch (IOException e) {
+            if (savePath.toFile().exists()) {
+                savePath.toFile().delete();
+            }
             throw new DownloadException(e);
         }
     }
