@@ -19,8 +19,8 @@ _✨轻量 便携 快捷 好用✨_
     <a href="https://github.com/ChengZhiMeow/MHDF-Library/blob/main/LICENSE">
         <img src="https://img.shields.io/github/license/ChengZhiMeow/MHDF-Library?style=flat-square" alt="license">
     </a>
-    <a href="https://qm.qq.com/cgi-bin/qm/qr?k=T047YB6lHNMMcMuVlK_hGBcT5HNESxMA&jump_from=webapi&authKey=0/IFGIO6xLjjHB2YKF7laLxkKWbtWbDhb1lt//m7GgbElJSWdRZ8RjbWzSsufkO6">
-        <img src="https://img.shields.io/badge/QQ群-129139830-brightgreen?style=flat-square" alt="qq-group">
+    <a href="https://qm.qq.com/cgi-bin/qm/qr?k=yFohqtqdDeXfdPvSLY81_3dzkcjc_-Uf&jump_from=webapi&authKey=ZxYDhb/PqczeWIYXE9IUEeuSAtFyxjYUrTgwUJu74FvOcGcJgTvo/vXAUzkHBO2Q">
+        <img src="https://img.shields.io/badge/QQ群-941867965-brightgreen?style=flat-square" alt="qq-group">
     </a>
 </p>
 
