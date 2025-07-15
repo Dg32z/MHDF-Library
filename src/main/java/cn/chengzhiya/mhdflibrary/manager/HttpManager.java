@@ -62,7 +62,7 @@ public final class HttpManager {
      * @return 文件数据
      */
     public byte[] downloadFile(String url) throws DownloadException {
-        return downloadFile(openConnection(url));
+        return this.downloadFile(this.openConnection(url));
     }
 
     /**
@@ -73,7 +73,7 @@ public final class HttpManager {
      */
     public void downloadFile(URLConnection connection, Path savePath) throws DownloadException {
         try {
-            Files.write(savePath, downloadFile(connection));
+            Files.write(savePath, this.downloadFile(connection));
         } catch (IOException e) {
             if (savePath.toFile().exists()) {
                 savePath.toFile().delete();
@@ -89,6 +89,6 @@ public final class HttpManager {
      * @param savePath 保存目录
      */
     public void downloadFile(String url, Path savePath) throws DownloadException {
-        downloadFile(openConnection(url), savePath);
+        this.downloadFile(openConnection(url), savePath);
     }
 }

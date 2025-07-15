@@ -14,8 +14,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public final class MHDFLibrary {
     public static RepositoryConfig mavenCenterMirror = new RepositoryConfig("https://repo.huaweicloud.com/repository/maven/", "huawei-maven");
 
-    public static MHDFLibrary instance;
-
     private final HttpManager httpManager;
     private final ReflectionManager reflectionManager;
     private final DependencyManager dependencyManager;
@@ -48,12 +46,10 @@ public final class MHDFLibrary {
     private final CopyOnWriteArrayList<DependencyConfig> dependencyConfigList = new CopyOnWriteArrayList<>();
 
     public MHDFLibrary(Class<?> main, LoggerManager loggerManager, String relocatorPrefix, File libraryFolder) {
-        instance = this;
-
         this.httpManager = new HttpManager();
         this.reflectionManager = new ReflectionManager();
 
-        this.dependencyManager = new DependencyManager(new ReflectionClassPathAppender(main.getClassLoader()));
+        this.dependencyManager = new DependencyManager(this, new ReflectionClassPathAppender(this, main.getClassLoader()));
 
         this.loggerManager = loggerManager;
 
@@ -65,7 +61,7 @@ public final class MHDFLibrary {
         }
 
         getDependencyManager().downloadDependencies(getDefaultDependencyList());
-        this.relocatorManager = new RelocatorManager();
+        this.relocatorManager = new RelocatorManager(this);
 
         getDependencyManager().loadDependencies(getDefaultDependencyList());
     }

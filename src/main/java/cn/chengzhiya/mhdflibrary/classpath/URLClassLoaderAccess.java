@@ -16,9 +16,10 @@ public abstract class URLClassLoaderAccess {
         this.classLoader = classLoader;
     }
 
-    public static URLClassLoaderAccess create(URLClassLoader classLoader) {
-        if (Reflection.isSupported()) {
-            return new Reflection(classLoader);
+    public static URLClassLoaderAccess create(MHDFLibrary instance, URLClassLoader classLoader) {
+        Reflection reflection = new Reflection(instance, classLoader);
+        if (reflection.isSupported()) {
+            return reflection;
         } else if (Unsafe.isSupported()) {
             return new Unsafe(classLoader);
         } else {
@@ -29,30 +30,25 @@ public abstract class URLClassLoaderAccess {
     public abstract void addURL(URL url);
 
     private static class Reflection extends URLClassLoaderAccess {
-        private static final Method METHOD;
+        private Method method;
 
-        static {
-            Method method;
-            try {
-                method = MHDFLibrary.instance.getReflectionManager().getMethod(URLClassLoader.class, "addURL", true, URL.class);
-            } catch (Exception e) {
-                method = null;
-            }
-            METHOD = method;
-        }
-
-        Reflection(URLClassLoader classLoader) {
+        private Reflection(MHDFLibrary instance, URLClassLoader classLoader) {
             super(classLoader);
+            try {
+                this.method = instance.getReflectionManager().getMethod(URLClassLoader.class, "addURL", true, URL.class);
+            } catch (Exception e) {
+                this.method = null;
+            }
         }
 
-        private static boolean isSupported() {
-            return METHOD != null;
+        private boolean isSupported() {
+            return this.method != null;
         }
 
         @Override
         @SneakyThrows
         public void addURL(URL url) {
-            METHOD.invoke(super.classLoader, url);
+            this.method.invoke(super.classLoader, url);
         }
     }
 

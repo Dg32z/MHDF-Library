@@ -3,6 +3,7 @@ package cn.chengzhiya.mhdflibrary.manager;
 import cn.chengzhiya.mhdflibrary.MHDFLibrary;
 import cn.chengzhiya.mhdflibrary.entity.DependencyConfig;
 import cn.chengzhiya.mhdflibrary.entity.RelocateConfig;
+import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.io.File;
@@ -12,8 +13,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class RelocatorManager {
+    @Getter
+    private final MHDFLibrary instance;
     private Constructor<?> jarRelocatorConstructor;
     private Method jarRelocatorRunMethod;
+
+    public RelocatorManager(MHDFLibrary instance) {
+        this.instance = instance;
+    }
 
     @SneakyThrows
     public void init() {
@@ -32,7 +39,7 @@ public final class RelocatorManager {
     private HashMap<String, String> getRelocatorMap() {
         HashMap<String, String> relocatorMap = new HashMap<>();
 
-        for (DependencyConfig dependencyConfig : MHDFLibrary.instance.getDependencyConfigList()) {
+        for (DependencyConfig dependencyConfig : this.getInstance().getDependencyConfigList()) {
             if (!dependencyConfig.isEnable()) {
                 continue;
             }
@@ -42,7 +49,7 @@ public final class RelocatorManager {
                 continue;
             }
 
-            String relocatorPrefix = MHDFLibrary.instance.getRelocatorPrefix();
+            String relocatorPrefix = this.getInstance().getRelocatorPrefix();
             if (relocateConfig.isRelocatableGroupId()) {
                 relocatorMap.put(dependencyConfig.getGroup(), relocatorPrefix + "." + dependencyConfig.getGroup());
             }
@@ -72,7 +79,11 @@ public final class RelocatorManager {
      */
     @SneakyThrows
     public File relocation(File input) {
-        File relocatedFile = getRelocatedFile(input);
+        if (!input.exists()) {
+            throw new NullPointerException("找不到依赖: " + input.getName());
+        }
+
+        File relocatedFile = this.getRelocatedFile(input);
         if (relocatedFile.exists()) {
             return relocatedFile;
         }
@@ -82,7 +93,7 @@ public final class RelocatorManager {
         }
 
         this.jarRelocatorRunMethod.invoke(
-                this.jarRelocatorConstructor.newInstance(input, relocatedFile, getRelocatorMap())
+                this.jarRelocatorConstructor.newInstance(input, relocatedFile, this.getRelocatorMap())
         );
 
         return relocatedFile;
@@ -95,13 +106,13 @@ public final class RelocatorManager {
      * @return 重定位后的依赖路径
      */
     public File relocation(DependencyConfig dependency) {
-        File file = new File(MHDFLibrary.instance.getLibraryFolder(), dependency.getFileName());
+        File file = new File(this.getInstance().getLibraryFolder(), dependency.getFileName());
 
         RelocateConfig relocateConfig = dependency.getRelocateConfig();
         if (!relocateConfig.isEnable()) {
             return file;
         }
 
-        return relocation(file);
+        return this.relocation(file);
     }
 }

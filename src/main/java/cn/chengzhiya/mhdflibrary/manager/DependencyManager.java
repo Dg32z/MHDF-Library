@@ -14,10 +14,12 @@ import java.util.concurrent.CountDownLatch;
 
 @Getter
 public final class DependencyManager {
+    private final MHDFLibrary instance;
     private final ClassPathAppender classPathAppender;
     private final CopyOnWriteArrayList<DependencyConfig> loadedDependencyList = new CopyOnWriteArrayList<>();
 
-    public DependencyManager(ClassPathAppender classPathAppender) {
+    public DependencyManager(MHDFLibrary instance, ClassPathAppender classPathAppender) {
+        this.instance = instance;
         this.classPathAppender = classPathAppender;
     }
 
@@ -28,7 +30,7 @@ public final class DependencyManager {
      */
     @SneakyThrows
     private void downloadDependency(DependencyConfig dependencyConfig) {
-        File file = new File(MHDFLibrary.instance.getLibraryFolder(), dependencyConfig.getFileName());
+        File file = new File(this.getInstance().getLibraryFolder(), dependencyConfig.getFileName());
         if (file.exists()) {
             return;
         }
@@ -36,8 +38,8 @@ public final class DependencyManager {
         RepositoryConfig repositoryConfig = dependencyConfig.getRepository();
         String url = repositoryConfig.getDependencyUrl(dependencyConfig);
 
-        MHDFLibrary.instance.getLoggerManager().log("正在下载依赖 " + dependencyConfig.getFileName() + "(" + url + ")");
-        MHDFLibrary.instance.getHttpManager().downloadFile(url, file.toPath());
+        this.getInstance().getLoggerManager().log("正在下载依赖 " + dependencyConfig.getFileName() + "(" + url + ")");
+        this.getInstance().getHttpManager().downloadFile(url, file.toPath());
     }
 
     /**
@@ -55,13 +57,13 @@ public final class DependencyManager {
                     return;
                 }
 
-                if (getLoadedDependencyList().contains(dependencyConfig)) {
+                if (this.getLoadedDependencyList().contains(dependencyConfig)) {
                     latch.countDown();
                     return;
                 }
 
                 try {
-                    downloadDependency(dependencyConfig);
+                    this.downloadDependency(dependencyConfig);
                 } catch (Throwable e) {
                     throw new RuntimeException("无法下载依赖 " + dependencyConfig.getFileName(), e);
                 } finally {
@@ -83,16 +85,16 @@ public final class DependencyManager {
      * @param dependencyConfig 依赖配置实例
      */
     private void loadDependency(DependencyConfig dependencyConfig) {
-        if (getLoadedDependencyList().contains(dependencyConfig)) {
+        if (this.getLoadedDependencyList().contains(dependencyConfig)) {
             return;
         }
 
-        MHDFLibrary.instance.getLoggerManager().log("正在加载依赖 " + dependencyConfig.getFileName());
+        this.getInstance().getLoggerManager().log("正在加载依赖 " + dependencyConfig.getFileName());
         this.classPathAppender.addJarToClasspath(
-                MHDFLibrary.instance.getRelocatorManager().relocation(dependencyConfig)
+                this.getInstance().getRelocatorManager().relocation(dependencyConfig)
         );
-        getLoadedDependencyList().add(dependencyConfig);
-        MHDFLibrary.instance.getLoggerManager().log("依赖 " + dependencyConfig.getFileName() + " 加载完成!");
+        this.getLoadedDependencyList().add(dependencyConfig);
+        this.getInstance().getLoggerManager().log("依赖 " + dependencyConfig.getFileName() + " 加载完成!");
     }
 
 
@@ -111,13 +113,13 @@ public final class DependencyManager {
                     return;
                 }
 
-                if (getLoadedDependencyList().contains(dependencyConfig)) {
+                if (this.getLoadedDependencyList().contains(dependencyConfig)) {
                     latch.countDown();
                     return;
                 }
 
                 try {
-                    loadDependency(dependencyConfig);
+                    this.loadDependency(dependencyConfig);
                 } catch (Throwable e) {
                     throw new RuntimeException("无法下载依赖 " + dependencyConfig.getFileName(), e);
                 } finally {

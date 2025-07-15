@@ -10,12 +10,12 @@ import java.nio.file.Path;
 public final class ReflectionClassPathAppender implements ClassPathAppender {
     private final URLClassLoaderAccess classLoaderAccess;
 
-    public ReflectionClassPathAppender(ClassLoader classLoader) throws IllegalStateException {
+    public ReflectionClassPathAppender(MHDFLibrary instance, ClassLoader classLoader) throws IllegalStateException {
         try {
             Class<?> paperPluginClassLoader = Class.forName("io.papermc.paper.plugin.entrypoint.classloader.PaperPluginClassLoader");
             if (paperPluginClassLoader.isInstance(classLoader)) {
-                classLoader = MHDFLibrary.instance.getReflectionManager().getFieldValue(
-                        MHDFLibrary.instance.getReflectionManager().getField(
+                classLoader = instance.getReflectionManager().getFieldValue(
+                        instance.getReflectionManager().getField(
                                 paperPluginClassLoader,
                                 "libraryLoader",
                                 true
@@ -27,7 +27,7 @@ public final class ReflectionClassPathAppender implements ClassPathAppender {
         }
 
         if (classLoader instanceof URLClassLoader) {
-            this.classLoaderAccess = URLClassLoaderAccess.create((URLClassLoader) classLoader);
+            this.classLoaderAccess = URLClassLoaderAccess.create(instance, (URLClassLoader) classLoader);
         } else {
             throw new RuntimeException("classLoader 类型并不是 URLClassLoader");
         }
