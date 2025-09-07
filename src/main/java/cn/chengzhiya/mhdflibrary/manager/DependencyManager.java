@@ -17,6 +17,8 @@ public final class DependencyManager {
     private final MHDFLibrary instance;
     private final ClassPathAppender classPathAppender;
     private final CopyOnWriteArrayList<DependencyConfig> loadedDependencyList = new CopyOnWriteArrayList<>();
+    private boolean errorHappened = false;
+
 
     public DependencyManager(MHDFLibrary instance, ClassPathAppender classPathAppender) {
         this.instance = instance;
@@ -48,6 +50,7 @@ public final class DependencyManager {
      * @param dependencies 依赖配置实例列表
      */
     public void downloadDependencies(Collection<DependencyConfig> dependencies) {
+        this.errorHappened = false;
         CountDownLatch latch = new CountDownLatch(dependencies.size());
 
         for (DependencyConfig dependencyConfig : dependencies) {
@@ -121,6 +124,7 @@ public final class DependencyManager {
                 try {
                     this.loadDependency(dependencyConfig);
                 } catch (Throwable e) {
+                    this.errorHappened = true;
                     throw new RuntimeException("无法下载依赖 " + dependencyConfig.getFileName(), e);
                 } finally {
                     latch.countDown();
